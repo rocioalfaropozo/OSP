@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Emparejar Sistemas de Información</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+    h2 {
+      color: #333;
+    }
+    .container {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 20px;
+    }
+    .list {
+      width: 45%;
+      min-height: 250px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+    .item {
+      padding: 8px;
+      margin: 5px 0;
+      background: #e0e0ff;
+      border: 1px solid #999;
+      cursor: grab;
+    }
+    .slot {
+      margin-bottom: 15px;
+      border: 2px dashed #999;
+      padding: 10px;
+      background: #fdfdfd;
+      min-height: 60px;
+    }
+    .slot-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .slot-area {
+      min-height: 40px;
+    }
+    .correct {
+      background-color: #d4edda;
+      border-color: green;
+    }
+    .incorrect {
+      background-color: #f8d7da;
+      border-color: red;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Empareja las decisiones con el tipo de sistema de información</h2>
+
+<div class="container">
+  <!-- Lista de acciones/decisiones -->
+  <div class="list" id="actions">
+    <div class="item" draggable="true" data-match="TPS">Registrar ventas</div>
+    <div class="item" draggable="true" data-match="TPS">Procesar pagos</div>
+    <div class="item" draggable="true" data-match="DSS">Evaluar escenarios estratégicos</div>
+    <div class="item" draggable="true" data-match="MIS">Generar informes mensuales</div>
+    <div class="item" draggable="true" data-match="ESS">Visualizar indicadores clave</div>
+    <div class="item" draggable="true" data-match="DSS">Análisis de riesgos</div>
+  </div>
+
+  <!-- Lista de sistemas -->
+  <div class="list" id="systems">
+    <div class="slot" data-type="TPS" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <div class="slot-title">TPS - Sistema de procesamiento de transacciones</div>
+      <div class="slot-area"></div>
+    </div>
+    <div class="slot" data-type="MIS" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <div class="slot-title">MIS - Sistema de información gerencial</div>
+      <div class="slot-area"></div>
+    </div>
+    <div class="slot" data-type="DSS" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <div class="slot-title">DSS - Sistema de soporte a decisiones</div>
+      <div class="slot-area"></div>
+    </div>
+    <div class="slot" data-type="ESS" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <div class="slot-title">ESS - Sistema de soporte ejecutivo</div>
+      <div class="slot-area"></div>
+    </div>
+  </div>
+</div>
+
+<button onclick="checkAnswers()">Verificar</button>
+<button onclick="resetGame()">Reiniciar</button>
+<p id="result"></p>
+
+<script>
+  let draggedItem = null;
+
+  document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      draggedItem = item;
+    });
+  });
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    if (!draggedItem) return;
+
+    // Mover el ítem al área de la ranura correspondiente
+    const targetSlot = ev.currentTarget.querySelector('.slot-area');
+    targetSlot.appendChild(draggedItem);
+    draggedItem.style.display = "block";
+    draggedItem = null;
+  }
+
+  // También permitir soltar de nuevo en la lista original para deshacer
+  document.getElementById('actions').addEventListener('dragover', allowDrop);
+  document.getElementById('actions').addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (!draggedItem) return;
+    document.getElementById('actions').appendChild(draggedItem);
+    draggedItem.style.display = "block";
+    draggedItem = null;
+  });
+
+  function checkAnswers() {
+    let correct = 0;
+    let total = 0;
+
+    document.querySelectorAll('.slot').forEach(slot => {
+      let systemType = slot.dataset.type;
+      slot.classList.remove('correct', 'incorrect');
+
+      const actions = slot.querySelectorAll('.item');
+      actions.forEach(action => {
+        total++;
+        if (action.dataset.match === systemType) {
+          correct++;
+        }
+      });
+
+      if (actions.length === 0) return;
+
+      // Marca como correcto solo si todas las acciones son correctas
+      const allCorrect = [...actions].every(a => a.dataset.match === systemType);
+      if (allCorrect) {
+        slot.classList.add('correct');
+      } else {
+        slot.classList.add('incorrect');
+      }
+    });
+
+    document.getElementById('result').textContent = `Aciertos: ${correct} de ${total}`;
+  }
+
+  function resetGame() {
+    const origin = document.getElementById('actions');
+    document.querySelectorAll('.item').forEach(item => {
+      origin.appendChild(item);
+    });
+
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.classList.remove('correct', 'incorrect');
+    });
+
+    document.getElementById('result').textContent = '';
+  }
+</script>
+
+</body>
+</html>
