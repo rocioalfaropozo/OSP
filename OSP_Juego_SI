@@ -1,0 +1,57 @@
+<style>
+  /* Mejora visual de los items */
+  .item:hover {
+    background: #c0c0ff;
+    box-shadow: 0 2px 8px #aaa;
+    transform: scale(1.05);
+    transition: all 0.2s;
+  }
+  .slot-area.highlight {
+    background: #e6ffe6;
+    border-color: #00b300;
+  }
+  @media (max-width: 700px) {
+    .container {
+      flex-direction: column;
+      gap: 20px;
+    }
+    .list { width: 100%; }
+  }
+</style>
+
+<script>
+  let draggedItem = null;
+
+  document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      draggedItem = item;
+      e.dataTransfer.effectAllowed = "move";
+    });
+  });
+
+  document.querySelectorAll('.slot').forEach(slot => {
+    slot.addEventListener('dragenter', (e) => {
+      slot.querySelector('.slot-area').classList.add('highlight');
+    });
+    slot.addEventListener('dragleave', (e) => {
+      slot.querySelector('.slot-area').classList.remove('highlight');
+    });
+    slot.addEventListener('drop', (e) => {
+      slot.querySelector('.slot-area').classList.remove('highlight');
+    });
+  });
+
+  function checkAnswers() {
+    let correct = 0;
+    let total = 0;
+    let allPlaced = true;
+    document.querySelectorAll('.item').forEach(item => {
+      if (item.parentElement.id === "actions") allPlaced = false;
+    });
+    if (!allPlaced) {
+      document.getElementById('result').textContent = "¡Coloca todos los ítems antes de verificar!";
+      return;
+    }
+    // ... resto igual
+  }
+</script>
