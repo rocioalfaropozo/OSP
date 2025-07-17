@@ -3,109 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <title>Emparejar Sistemas de Información</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Mejoras visuales y responsive -->
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Arial, sans-serif;
       padding: 20px;
-      background-color: #f5f7fa;
+      background: linear-gradient(120deg, #e6e9f0 0%, #eef1f5 100%);
+      margin: 0;
     }
     h2 {
-      color: #333;
+      color: #222;
+      text-align: center;
+      margin-bottom: 25px;
     }
     .container {
       display: flex;
       gap: 40px;
       margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     .list {
       width: 45%;
+      min-width: 280px;
       min-height: 250px;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1.5px solid #bfc9d6;
       background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px #d9e2ec60;
+      margin-bottom: 20px;
+      transition: box-shadow 0.2s;
+    }
+    .list:focus-within {
+      box-shadow: 0 4px 22px #b7d3f4a0;
     }
     .item {
-      padding: 8px;
-      margin: 5px 0;
-      background: #e0e0ff;
-      border: 1px solid #999;
+      padding: 10px 14px;
+      margin: 7px 0;
+      background: #dde4ff;
+      border: 1.5px solid #a3b1e6;
+      border-radius: 7px;
       cursor: grab;
+      font-size: 17px;
+      outline: none;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 1px 4px #aaaaaa55;
+    }
+    .item:active, .item:focus {
+      background: #c3d2ff;
+      box-shadow: 0 2px 8px #8ea3e9;
+      transform: scale(1.04);
+    }
+    .item:hover {
+      background: #b2c4f7;
     }
     .slot {
-      margin-bottom: 15px;
-      border: 2px dashed #999;
+      margin-bottom: 18px;
+      border: 2px dashed #8ca0c8;
+      border-radius: 10px;
       padding: 10px;
-      background: #fdfdfd;
-      min-height: 60px;
-    }
-    .slot-title {
-      font-weight: bold;
-      margin-bottom: 5px;
+      background: #f7faff;
+      min-height: 70px;
+      transition: border-color 0.2s, background 0.2s;
     }
     .slot-area {
       min-height: 40px;
+      margin-top: 3px;
+    }
+    .slot-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #444;
+    }
+    .slot-area.highlight {
+      background: #e3ffe8;
+      border-radius: 6px;
+      border: 1.5px solid #3abe63;
     }
     .correct {
-      background-color: #d4edda;
-      border-color: green;
+      background-color: #d4edda !important;
+      border-color: #30a149 !important;
+      box-shadow: 0 1px 8px #3abe6340;
     }
     .incorrect {
-      background-color: #f8d7da;
-      border-color: red;
+      background-color: #f8d7da !important;
+      border-color: #e04a4a !important;
+      box-shadow: 0 1px 8px #e04a4a40;
     }
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-right: 10px;
+      padding: 10px 24px;
+      font-size: 17px;
+      margin-right: 12px;
+      border-radius: 7px;
+      border: none;
+      background: #6c8ae6;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 1px 4px #bbb;
+      transition: background 0.2s;
+    }
+    button:hover, button:focus {
+      background: #3a61c9;
+    }
+    #result {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 10px;
+      text-align: center;
+      min-height: 24px;
+    }
+    @media (max-width: 900px) {
+      .container { flex-direction: column; gap: 22px; }
+      .list { width: 100%; }
+    }
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      h2 { font-size: 22px; }
+      button { font-size: 15px; }
+      #result { font-size: 15px; }
     }
   </style>
 </head>
 <body>
-
 <h2>Empareja las decisiones con el tipo de sistema de información</h2>
 
-<div class="container">
+<div class="container" role="application" aria-label="Juego de emparejar sistemas de información">
   <!-- Lista de acciones/decisiones -->
-  <div class="list" id="actions">
-    <div class="item" draggable="true" data-match="TPS">Registrar ventas</div>
-    <div class="item" draggable="true" data-match="TPS">Procesar pagos</div>
-    <div class="item" draggable="true" data-match="DSS">Evaluar escenarios estratégicos</div>
-    <div class="item" draggable="true" data-match="MIS">Generar informes mensuales</div>
-    <div class="item" draggable="true" data-match="ESS">Visualizar indicadores clave</div>
-    <div class="item" draggable="true" data-match="DSS">Análisis de riesgos</div>
+  <div class="list" id="actions" aria-label="Lista de decisiones" tabindex="0">
+    <div class="item" draggable="true" data-match="TPS" tabindex="0" aria-grabbed="false">Registrar ventas</div>
+    <div class="item" draggable="true" data-match="TPS" tabindex="0" aria-grabbed="false">Procesar pagos</div>
+    <div class="item" draggable="true" data-match="DSS" tabindex="0" aria-grabbed="false">Evaluar escenarios estratégicos</div>
+    <div class="item" draggable="true" data-match="MIS" tabindex="0" aria-grabbed="false">Generar informes mensuales</div>
+    <div class="item" draggable="true" data-match="ESS" tabindex="0" aria-grabbed="false">Visualizar indicadores clave</div>
+    <div class="item" draggable="true" data-match="DSS" tabindex="0" aria-grabbed="false">Análisis de riesgos</div>
   </div>
 
   <!-- Lista de sistemas -->
-  <div class="list" id="systems">
-    <div class="slot" data-type="TPS" ondragover="allowDrop(event)" ondrop="drop(event)">
+  <div class="list" id="systems" aria-label="Lista de sistemas de información" tabindex="0">
+    <div class="slot" data-type="TPS" aria-label="TPS - Sistema de procesamiento de transacciones" ondragover="allowDrop(event)" ondrop="drop(event)" tabindex="0">
       <div class="slot-title">TPS - Sistema de procesamiento de transacciones</div>
       <div class="slot-area"></div>
     </div>
-    <div class="slot" data-type="MIS" ondragover="allowDrop(event)" ondrop="drop(event)">
+    <div class="slot" data-type="MIS" aria-label="MIS - Sistema de información gerencial" ondragover="allowDrop(event)" ondrop="drop(event)" tabindex="0">
       <div class="slot-title">MIS - Sistema de información gerencial</div>
       <div class="slot-area"></div>
     </div>
-    <div class="slot" data-type="DSS" ondragover="allowDrop(event)" ondrop="drop(event)">
+    <div class="slot" data-type="DSS" aria-label="DSS - Sistema de soporte a decisiones" ondragover="allowDrop(event)" ondrop="drop(event)" tabindex="0">
       <div class="slot-title">DSS - Sistema de soporte a decisiones</div>
       <div class="slot-area"></div>
     </div>
-    <div class="slot" data-type="ESS" ondragover="allowDrop(event)" ondrop="drop(event)">
+    <div class="slot" data-type="ESS" aria-label="ESS - Sistema de soporte ejecutivo" ondragover="allowDrop(event)" ondrop="drop(event)" tabindex="0">
       <div class="slot-title">ESS - Sistema de soporte ejecutivo</div>
       <div class="slot-area"></div>
     </div>
   </div>
 </div>
 
-<button onclick="checkAnswers()">Verificar</button>
-<button onclick="resetGame()">Reiniciar</button>
-<p id="result"></p>
+<div style="text-align:center;">
+  <button onclick="checkAnswers()" aria-label="Verificar respuestas">Verificar</button>
+  <button onclick="resetGame()" aria-label="Reiniciar juego">Reiniciar</button>
+</div>
+<p id="result" aria-live="polite"></p>
 
+<!-- JavaScript Mejorado y comentado -->
 <script>
+  // Mejora de usabilidad: feedback visual y accesibilidad
   let draggedItem = null;
 
+  // Drag & Drop para ítems
   document.querySelectorAll('.item').forEach(item => {
     item.addEventListener('dragstart', (e) => {
       draggedItem = item;
+      item.setAttribute('aria-grabbed', 'true');
+      setTimeout(() => { item.style.visibility = "hidden"; }, 50);
+    });
+    item.addEventListener('dragend', (e) => {
+      draggedItem = null;
+      item.setAttribute('aria-grabbed', 'false');
+      item.style.visibility = "visible";
+    });
+    // Accesibilidad: también permitir mover con teclado
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        item.focus();
+        draggedItem = item;
+      }
+    });
+  });
+
+  // Drag & drop para ranuras
+  document.querySelectorAll('.slot').forEach(slot => {
+    slot.addEventListener('dragenter', (e) => {
+      slot.querySelector('.slot-area').classList.add('highlight');
+    });
+    slot.addEventListener('dragleave', (e) => {
+      slot.querySelector('.slot-area').classList.remove('highlight');
+    });
+    slot.addEventListener('drop', (e) => {
+      slot.querySelector('.slot-area').classList.remove('highlight');
     });
   });
 
@@ -116,15 +213,13 @@
   function drop(ev) {
     ev.preventDefault();
     if (!draggedItem) return;
-
-    // Mover el ítem al área de la ranura correspondiente
     const targetSlot = ev.currentTarget.querySelector('.slot-area');
     targetSlot.appendChild(draggedItem);
     draggedItem.style.display = "block";
     draggedItem = null;
   }
 
-  // También permitir soltar de nuevo en la lista original para deshacer
+  // Permitir soltar de nuevo en la lista original para deshacer
   document.getElementById('actions').addEventListener('dragover', allowDrop);
   document.getElementById('actions').addEventListener('drop', (e) => {
     e.preventDefault();
@@ -134,14 +229,22 @@
     draggedItem = null;
   });
 
+  // Verificación mejorada
   function checkAnswers() {
     let correct = 0;
     let total = 0;
-
+    let allPlaced = true;
+    // Verifica si todos los ítems han sido movidos
+    document.querySelectorAll('.item').forEach(item => {
+      if (item.parentElement.id === "actions") allPlaced = false;
+    });
+    if (!allPlaced) {
+      showResult("⚠️ Coloca todos los ítems antes de verificar.", "orange");
+      return;
+    }
     document.querySelectorAll('.slot').forEach(slot => {
       let systemType = slot.dataset.type;
       slot.classList.remove('correct', 'incorrect');
-
       const actions = slot.querySelectorAll('.item');
       actions.forEach(action => {
         total++;
@@ -149,9 +252,7 @@
           correct++;
         }
       });
-
       if (actions.length === 0) return;
-
       // Marca como correcto solo si todas las acciones son correctas
       const allCorrect = [...actions].every(a => a.dataset.match === systemType);
       if (allCorrect) {
@@ -160,23 +261,32 @@
         slot.classList.add('incorrect');
       }
     });
-
-    document.getElementById('result').textContent = `Aciertos: ${correct} de ${total}`;
+    // Emoji feedback
+    let emoji = correct === total ? "✅" : (correct > 0 ? "🟡" : "❌");
+    showResult(`${emoji} Aciertos: ${correct} de ${total}`, correct === total ? "green" : (correct > 0 ? "orange" : "red"));
   }
 
+  // Reset mejorado
   function resetGame() {
     const origin = document.getElementById('actions');
     document.querySelectorAll('.item').forEach(item => {
       origin.appendChild(item);
+      item.style.display = "block";
+      item.setAttribute('aria-grabbed', 'false');
     });
-
     document.querySelectorAll('.slot').forEach(slot => {
       slot.classList.remove('correct', 'incorrect');
+      slot.querySelector('.slot-area').classList.remove('highlight');
     });
+    showResult('');
+  }
 
-    document.getElementById('result').textContent = '';
+  // Función para mostrar resultado con color
+  function showResult(message, color) {
+    const result = document.getElementById('result');
+    result.textContent = message;
+    result.style.color = color || "#222";
   }
 </script>
-
 </body>
 </html>
